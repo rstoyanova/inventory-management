@@ -10,17 +10,14 @@ import com.inventory.repository.StockRepository;
 import com.inventory.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class TransactionService {
 
-    @Autowired
-    JdbcClient jdbcClient;
-
-    Logger logger = LoggerFactory.getLogger(TransactionService.class);
+    private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
 
     private final TransactionRepository transactionRepository;
     private final StockRepository stockRepository;
@@ -49,10 +46,11 @@ public class TransactionService {
     public void correctTransaction(TransactionPatchRequest correction) {
         Long originalTransactionId = correction.originalTransactionId();
         Transaction correctTransaction = mapTransactionCorrectionDtoToTransaction(correction);
-
         Transaction originalTransaction = transactionRepository.getById(originalTransactionId).orElseThrow(
                 () -> new TransactionNotFoundException(originalTransactionId)
         );
+        log.info("Original transaction [{}, {}, {}, {}, {}]", originalTransaction.itemName(), originalTransaction.quantity(), originalTransaction.unit().toString(),
+                originalTransaction.pricePerUnit(), originalTransaction.warehouseName());
         transactionRepository.createTransaction(
                     correctTransaction.itemName(),
                     correctTransaction.quantity(),
@@ -67,11 +65,21 @@ public class TransactionService {
 
         double newQuantity = stockEntryToFix.quantity() - originalTransaction.quantity();
         if (newQuantity == 0) {
-            stockRepository.updateStockItemName(stockEntryToFix.id(), correctTransaction.itemName());
-            stockRepository.updateStockQuantity(stockEntryToFix.id(), correctTransaction.quantity());
-            stockRepository.updateStockUnit(stockEntryToFix.id(), correctTransaction.unit());
-            stockRepository.updateStockPricePerUnit(stockEntryToFix.id(), correctTransaction.pricePerUnit());
-            stockRepository.updateStockWarehouseName(stockEntryToFix.id(), correctTransaction.warehouseName());
+            if (!stockEntryToFix.itemName().equals(correctTransaction.itemName())) {
+                stockRepository.updateStockItemName(stockEntryToFix.id(), correctTransaction.itemName());
+            }
+            if (!stockEntryToFix.quantity().equals(correctTransaction.quantity())) {
+                stockRepository.updateStockQuantity(stockEntryToFix.id(), correctTransaction.quantity());
+            }
+            if (!stockEntryToFix.unit().equals(correctTransaction.unit())) {
+                stockRepository.updateStockUnit(stockEntryToFix.id(), correctTransaction.unit());
+            }
+            if (!Objects.equals(stockEntryToFix.pricePerUnit(), correctTransaction.pricePerUnit())) {
+                stockRepository.updateStockPricePerUnit(stockEntryToFix.id(), correctTransaction.pricePerUnit());
+            }
+            if (!stockEntryToFix.warehouseName().equals(correctTransaction.warehouseName())) {
+                stockRepository.updateStockWarehouseName(stockEntryToFix.id(), correctTransaction.warehouseName());
+            }
         } else {
             stockRepository.createStock(
                     correctTransaction.itemName(),

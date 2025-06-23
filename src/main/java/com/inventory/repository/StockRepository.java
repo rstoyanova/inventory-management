@@ -16,7 +16,6 @@ public class StockRepository {
     private static final Logger log = LoggerFactory.getLogger(StockRepository.class);
     private final JdbcClient jdbcClient;
 
-
     public StockRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }

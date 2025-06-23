@@ -10,10 +10,6 @@ public enum Unit {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
     public static Unit fromValue(String value) {
         for (Unit unit : Unit.values()) {
             if (unit.value.equalsIgnoreCase(value)) {

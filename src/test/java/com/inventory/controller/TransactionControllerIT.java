@@ -6,6 +6,7 @@ import com.inventory.model.StockEntry;
 import com.inventory.model.Transaction;
 import com.inventory.model.Unit;
 import com.inventory.repository.TransactionRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class TransactionControllerIT {
     private JdbcClient jdbcClient;
 
     @BeforeEach
-    void init() {
+    public void init() {
         jdbcClient.sql("""
                 INSERT INTO transactions (item_name, quantity, unit, price_per_unit, warehouse_name) VALUES
                 ('Watermelon', 50, 'KG', 1.20, 'LIDL'),
@@ -84,6 +85,12 @@ public class TransactionControllerIT {
                 ('Tomato_ERR', 100, 'KG', 0.90, 'KAUFLAND');
                 """)
                 .update();
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        log.info("\n\n      DELETE....\n\n");
+        jdbcClient.sql("TRUNCATE transactions, stocks RESTART IDENTITY CASCADE").update();
     }
 
     @Test
@@ -270,16 +277,6 @@ public class TransactionControllerIT {
 
     @Test
     void testCorrectionTransactionCreatedNewStock() throws Exception {
-        String payload = Files.readString(
-                Path.of("src/test/resources/correction_transactions_2.json"),
-                StandardCharsets.UTF_8
-        );
-
-        mockMvc.perform(patch("/api/v1/transactions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(payload))
-                .andExpect(status().isAccepted());
-
         jdbcClient.sql("""
                 INSERT INTO transactions (item_name, quantity, unit, price_per_unit, warehouse_name) VALUES
                 ('Watermelon', 33, 'KG', 1.20, 'LIDL');
@@ -291,6 +288,18 @@ public class TransactionControllerIT {
                   AND warehouse_name = 'LIDL';
                 """)
                 .update();
+
+        String payload = Files.readString(
+                Path.of("src/test/resources/correction_transactions_2.json"),
+                StandardCharsets.UTF_8
+        );
+
+        mockMvc.perform(patch("/api/v1/transactions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isAccepted());
+
+
 
         // Check if the stocks table is updated correctly
         List<StockEntry> stockMap = jdbcClient.sql("SELECT * FROM stocks")
@@ -352,7 +361,7 @@ public class TransactionControllerIT {
 
         ErrorResponse error = objectMapper.readValue(response, ErrorResponse.class);
 
-        assertEquals("Transaction Not Found", error.error());
+        assertEquals("Transaction Not Found!", error.error());
         assertEquals("Transaction with id 999 not found!", error.message());
     }
 
@@ -383,7 +392,7 @@ public class TransactionControllerIT {
 
         ErrorResponse error = objectMapper.readValue(response, ErrorResponse.class);
 
-        assertEquals("tock Not Found", error.error());
-        assertEquals("Transaction with id 999 not found!", error.message());
+        assertEquals("Stock Not Found!", error.error());
+        assertEquals("Stock [Watermelon, LIDL, 1.2] was not found!", error.message());
     }
 }

@@ -16,17 +16,8 @@ public class TransactionRepository {
     private static final Logger log = LoggerFactory.getLogger(TransactionRepository.class);
     private final JdbcClient jdbcClient;
 
-
     public TransactionRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
-    }
-
-    public List<Transaction> getAll() {
-        log.info("Getting all transactions ...");
-
-        return jdbcClient.sql("SELECT * FROM transactions")
-                .query(Transaction.class)
-                .list();
     }
 
     public Optional<Transaction> getById(Long id) {

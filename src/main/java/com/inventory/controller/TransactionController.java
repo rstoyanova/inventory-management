@@ -33,7 +33,6 @@ public class TransactionController {
         });
     }
 
-
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PatchMapping("")
     void correctTransactions(@Valid @RequestBody List<TransactionPatchRequest> transactions) {

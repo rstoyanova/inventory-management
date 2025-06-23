@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleStockNotFound(StockNotFoundException ex) {
         log.warn("Stock not found: {}", ex.getMessage());
         return new ResponseEntity<>(
-                new ErrorResponse("Stock Not Found", ex.getMessage(), LocalDateTime.now()),
+                new ErrorResponse("Stock Not Found!", ex.getMessage(), LocalDateTime.now()),
                 HttpStatus.NOT_FOUND
         );
     }
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
         log.warn("Transaction not found: {}", ex.getMessage());
 
         return new ResponseEntity<>(
-                new ErrorResponse("Transaction Not Found", ex.getMessage(), LocalDateTime.now()),
+                new ErrorResponse("Transaction Not Found!", ex.getMessage(), LocalDateTime.now()),
                 HttpStatus.NOT_FOUND
         );
     }
