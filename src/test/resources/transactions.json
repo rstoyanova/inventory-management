@@ -1,0 +1,23 @@
+[
+  {
+    "itemName":"Tomatoes",
+    "quantity":10,
+    "unit":"KG",
+    "pricePerUnit":2.60,
+    "warehouseName":"LIDL"
+  },
+  {
+    "itemName":"Cheese",
+    "quantity":100,
+    "unit":"KG",
+    "pricePerUnit":22,
+    "warehouseName":"KAUFLAND"
+  },
+  {
+    "itemName":"Tomatoes",
+    "quantity":120,
+    "unit":"KG",
+    "pricePerUnit":2.60,
+    "warehouseName":"LIDL"
+  }
+]

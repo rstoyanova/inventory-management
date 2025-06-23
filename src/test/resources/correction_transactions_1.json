@@ -1,0 +1,26 @@
+[
+  {
+    "originalTransactionId": 1,
+    "itemName": "Watermelon",
+    "quantity": 77,
+    "unit": "KG",
+    "pricePerUnit": 1.40,
+    "warehouseName": "LIDL"
+  },
+  {
+    "originalTransactionId": 2,
+    "itemName": "Potato",
+    "quantity": 123,
+    "unit": "KG",
+    "pricePerUnit": 0.60,
+    "warehouseName": "KAUFLAND"
+  },
+  {
+    "originalTransactionId": 3,
+    "itemName": "Tomato",
+    "quantity": 100,
+    "unit": "LB",
+    "pricePerUnit": 0.90,
+    "warehouseName": "KAUFLAND"
+  }
+]

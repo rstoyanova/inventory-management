@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    initialization-mode: always
+    platform: postgres
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+

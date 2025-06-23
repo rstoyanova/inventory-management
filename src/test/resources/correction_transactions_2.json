@@ -1,0 +1,10 @@
+[
+  {
+    "originalTransactionId": 4,
+    "itemName": "Watermelon",
+    "quantity": 20.40,
+    "unit": "KG",
+    "pricePerUnit": 2.30,
+    "warehouseName": "LIDL"
+  }
+]
